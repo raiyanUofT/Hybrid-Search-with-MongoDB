@@ -1,0 +1,5 @@
+{
+    "search_term": "second",
+    "search_type": "keyword",
+    "model_name": "bert-base-uncased"
+}
