@@ -10,31 +10,6 @@ This project demonstrates how to perform both keyword and semantic search using 
 - Perform keyword search.
 - Perform semantic search using different models.
 
-## Directory Structure
-
-```sh
-project/
-│
-├── config/
-│   └── config.json
-├── elasticsearch_client/
-│   └── elasticsearch_client.py
-├── model_loader/
-│   └── model_loader.py
-├── mongodb_client/
-│   ├── mongodb_client.py
-│   ├── insert_data.py
-│   └── clear_data.py
-├── search_algorithms/
-│   ├── keyword_search.py
-│   └── semantic_search.py
-├── utils/
-│   └── display_results.py
-├── index_data.py
-├── insert_data.py
-└── search_data.py
-```
-
 ## Installation
 
 ### Pre-Requisites
@@ -67,7 +42,8 @@ pip install -r requirements.txt
 
 4. **Index the new data to Elasticsearch**:
     ```sh
-    python index_data.py
+    python elastiocsearch_client/setup_index.py
+    python elastiocsearch_client/index_data.py
     ```
 
 5. **Configure the search parameters** in `config/config.json`:
