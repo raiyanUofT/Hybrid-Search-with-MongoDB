@@ -5,19 +5,19 @@ from colorama import init, Fore, Style
 init(autoreset=True)
 
 def display_results(search_term, search_type, hits):
-    # Display search information
-    print(f"{Fore.GREEN}{Style.BRIGHT}Search Term:{Style.RESET_ALL} {search_term}")
-    print(f"{Fore.GREEN}{Style.BRIGHT}Search Type:{Style.RESET_ALL} {search_type}")
-
-    # Create a PrettyTable to display results
+    print(f"{Fore.GREEN}{Style.BRIGHT}Search Results for '{search_term}' ({search_type} Search):{Style.RESET_ALL}")
+    
     table = PrettyTable()
-    table.field_names = ["Title", "Content", "Score"]
+    table.field_names = [f"{Fore.YELLOW}Title{Style.RESET_ALL}", f"{Fore.YELLOW}Content{Style.RESET_ALL}", f"{Fore.YELLOW}Score{Style.RESET_ALL}"]
 
-    # Populate the table with results
+    seen_titles = set()
     for hit in hits:
-        source = hit['_source']
+        title = hit['_source']['title']
+        content = hit['_source']['content']
         score = hit['_score']
-        table.add_row([source['title'], source['content'], f"{score:.4f}"])
 
-    # Print the table
+        if title not in seen_titles:
+            seen_titles.add(title)
+            table.add_row([f"{Fore.CYAN}{title}{Style.RESET_ALL}", content, f"{Fore.MAGENTA}{score:.4f}{Style.RESET_ALL}"])
+
     print(table)

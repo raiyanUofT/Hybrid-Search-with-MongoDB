@@ -1,5 +1,5 @@
 {
-    "search_term":"health",
+    "search_term":"planes",
     "search_type": "semantic",
     "model_name": "sentence-transformers/all-MiniLM-L6-v2"
 }

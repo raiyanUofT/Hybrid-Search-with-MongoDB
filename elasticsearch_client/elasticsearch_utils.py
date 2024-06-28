@@ -1,5 +1,6 @@
 import sys
 import os
+from colorama import init, Fore, Style
 
 # Append the project root directory to the system path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,6 +9,8 @@ sys.path.append(project_root)
 from model_loader.model_loader import load_model
 from elasticsearch_client import get_elasticsearch_client
 from config.config_utils import get_model_name
+from mongodb_client.mongodb_client import get_mongodb_client, get_database, get_collection
+from elasticsearch.helpers import bulk
 import torch
 
 def setup_index(index_name="sample_index"):
@@ -26,7 +29,8 @@ def setup_index(index_name="sample_index"):
     # Delete the existing index if it exists
     if es.indices.exists(index=index_name):
         es.indices.delete(index=index_name)
-    
+        print(f"{Fore.RED}{Style.BRIGHT}Existing Elasticsearch index '{index_name}' deleted.{Style.RESET_ALL}")
+
     # Create the index with the correct mapping
     mapping = {
         "mappings": {
@@ -46,21 +50,18 @@ def setup_index(index_name="sample_index"):
     }
 
     es.indices.create(index=index_name, body=mapping)
-    print(f"Elasticsearch index '{index_name}' created with dense vector dimensions: {dimensions}")
+    print(f"{Fore.GREEN}{Style.BRIGHT}Elasticsearch index '{index_name}' created with dense vector dimensions: {dimensions}.{Style.RESET_ALL}")
 
     return tokenizer, model
 
 def index_data(index_name="sample_index"):
-    from mongodb_client.mongodb_client import get_mongodb_client
-    from elasticsearch.helpers import bulk
-
     # Ensure the Elasticsearch index is set up correctly
     tokenizer, model = setup_index(index_name)
 
     # Connect to MongoDB
     client = get_mongodb_client()
-    db = client['sampledb']
-    collection = db['samplecollection']
+    db = get_database(client)
+    collection = get_collection(db)
 
     # Connect to Elasticsearch
     es = get_elasticsearch_client()
@@ -91,4 +92,4 @@ def index_data(index_name="sample_index"):
     # Index data to Elasticsearch
     bulk(es, actions)
 
-    print(f"Data indexed into Elasticsearch index '{index_name}' with dense vectors.")
+    print(f"{Fore.GREEN}{Style.BRIGHT}Data indexed into Elasticsearch index '{index_name}' with dense vectors.{Style.RESET_ALL}")
