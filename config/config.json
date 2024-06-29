@@ -1,5 +1,1 @@
-{
-    "search_term":"engineering",
-    "search_type": "semantic",
-    "model_name": "sentence-transformers/all-MiniLM-L6-v2"
-}
+{"search_type": "keyword", "model_name": "bert-base-uncased"}

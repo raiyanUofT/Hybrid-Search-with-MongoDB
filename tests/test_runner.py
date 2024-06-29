@@ -21,7 +21,7 @@ def run_tests(test_functions):
     return results
 
 def summarize_results(results):
-    passed = sum(result for result in results.values())
+    passed = sum(result for result in results.values() if result is not None)
     failed = len(results) - passed
 
     print("\nTest Summary:")
@@ -37,3 +37,22 @@ def summarize_results(results):
     print(f"Total tests: {total_tests}")
     print(f"{Fore.GREEN}Passed: {passed}{Style.RESET_ALL}")
     print(f"{Fore.RED}Failed: {failed}{Style.RESET_ALL}")
+
+if __name__ == "__main__":
+    from test_mongodb import mongodb_tests
+    from test_elasticsearch import elasticsearch_tests
+    from test_config import config_tests
+    from test_model_loader import model_loader_tests
+    from test_search_algorithms import search_algorithms_tests
+
+    all_tests = {
+        **mongodb_tests,
+        **elasticsearch_tests,
+        **config_tests,
+        **model_loader_tests,
+        **search_algorithms_tests,
+        # Add other tests here in the future
+    }
+
+    results = run_tests(all_tests)
+    summarize_results(results)
