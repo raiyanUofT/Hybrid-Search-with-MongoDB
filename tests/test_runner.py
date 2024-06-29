@@ -29,7 +29,7 @@ def summarize_results(results):
         if result:
             print(f"{Fore.GREEN}{test} passed.{Style.RESET_ALL}")
         else:
-            print(f"{Fore.RED}{test} failed.{Style.RESET.ALL}")
+            print(f"{Fore.RED}{test} failed.{Style.RESET_ALL}")
     
     # Print aggregate statistics
     total_tests = len(results)

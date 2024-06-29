@@ -43,6 +43,7 @@ def test_elasticsearch_installed():
         return True
     except Exception as e:
         print(f"{Fore.RED}Elasticsearch installation test failed: {e}{Style.RESET_ALL}")
+        return False
 
 def test_elasticsearch_running():
     try:
@@ -142,6 +143,78 @@ def test_delete_document():
     finally:
         es.indices.delete(index=index_name)
 
+def test_update_document():
+    es = get_elasticsearch_client()
+    index_name = 'test_index'
+    document = {"title": "Test Document", "content": "Test content for Elasticsearch."}
+    updated_document = {"doc": {"content": "Updated content for Elasticsearch."}}
+
+    # Clean up any pre-existing index
+    if es.indices.exists(index=index_name):
+        es.indices.delete(index=index_name)
+
+    try:
+        es.indices.create(index=index_name)
+        es.index(index=index_name, id=1, document=document)
+        es.update(index=index_name, id=1, body=updated_document)
+        updated_doc = es.get(index=index_name, id=1)
+        if updated_doc['_source']['content'] == "Updated content for Elasticsearch.":
+            print(f"{Fore.GREEN}Elasticsearch update document test succeeded.{Style.RESET_ALL}")
+            return True
+        else:
+            print(f"{Fore.RED}Elasticsearch update document test failed.{Style.RESET_ALL}")
+            return False
+    finally:
+        es.indices.delete(index=index_name)
+
+def test_bulk_indexing():
+    es = get_elasticsearch_client()
+    index_name = 'test_index'
+    documents = [
+        {"index": {"_index": index_name, "_id": 1}},
+        {"title": "Test Document 1", "content": "Content 1"},
+        {"index": {"_index": index_name, "_id": 2}},
+        {"title": "Test Document 2", "content": "Content 2"},
+    ]
+
+    # Clean up any pre-existing index
+    if es.indices.exists(index=index_name):
+        es.indices.delete(index=index_name)
+
+    try:
+        es.indices.create(index=index_name)
+        es.bulk(body=documents)
+        es.indices.refresh(index=index_name)
+        doc1 = es.get(index=index_name, id=1)
+        doc2 = es.get(index=index_name, id=2)
+        if doc1['_source']['title'] == "Test Document 1" and doc2['_source']['title'] == "Test Document 2":
+            print(f"{Fore.GREEN}Elasticsearch bulk indexing test succeeded.{Style.RESET_ALL}")
+            return True
+        else:
+            print(f"{Fore.RED}Elasticsearch bulk indexing test failed.{Style.RESET_ALL}")
+            return False
+    finally:
+        es.indices.delete(index=index_name)
+
+def test_delete_index():
+    es = get_elasticsearch_client()
+    index_name = 'test_index'
+
+    # Ensure index exists
+    es.indices.create(index=index_name, ignore=400)
+
+    try:
+        es.indices.delete(index=index_name)
+        if not es.indices.exists(index=index_name):
+            print(f"{Fore.GREEN}Elasticsearch delete index test succeeded.{Style.RESET_ALL}")
+            return True
+        else:
+            print(f"{Fore.RED}Elasticsearch delete index test failed.{Style.RESET_ALL}")
+            return False
+    except Exception as e:
+        print(f"{Fore.RED}Elasticsearch delete index test failed: {e}{Style.RESET_ALL}")
+        return False
+
 # Define all Elasticsearch test functions
 elasticsearch_tests = {
     "Elasticsearch Installed": test_elasticsearch_installed,
@@ -150,4 +223,7 @@ elasticsearch_tests = {
     "Elasticsearch Index Document": test_index_document,
     "Elasticsearch Search Document": test_search_document,
     "Elasticsearch Delete Document": test_delete_document,
+    "Elasticsearch Update Document": test_update_document,
+    "Elasticsearch Bulk Indexing": test_bulk_indexing,
+    "Elasticsearch Delete Index": test_delete_index,
 }

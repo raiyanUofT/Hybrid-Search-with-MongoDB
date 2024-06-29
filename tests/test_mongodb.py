@@ -50,15 +50,13 @@ def test_insert_data():
     db = get_database(client)
     collection = get_collection(db)
 
-    initial_count = collection.count_documents({})
-
     # Insert test data
     test_data = {"title": "Test Book", "content": "Test Content"}
     collection.insert_one(test_data)
 
     # Verify insertion
-    inserted = collection.find_one({"title": "Test Book"})
-    if inserted:
+    inserted_doc = collection.find_one({"title": "Test Book"})
+    if inserted_doc:
         print(f"{Fore.GREEN}MongoDB insert data test succeeded.{Style.RESET_ALL}")
         # Clean up
         collection.delete_one({"title": "Test Book"})
@@ -72,6 +70,9 @@ def test_clear_data():
     db = get_database(client)
     collection = get_collection(db)
 
+    # Clean up any existing documents with the same title
+    collection.delete_many({"title": "Test Book"})
+
     # Insert test data
     test_data = {"title": "Test Book", "content": "Test Content"}
     collection.insert_one(test_data)
@@ -80,12 +81,56 @@ def test_clear_data():
     collection.delete_one({"title": "Test Book"})
 
     # Verify deletion
-    deleted = collection.find_one({"title": "Test Book"})
-    if not deleted:
+    remaining_docs = list(collection.find({"title": "Test Book"}))
+    if not remaining_docs:
         print(f"{Fore.GREEN}MongoDB clear data test succeeded.{Style.RESET_ALL}")
         return True
     else:
-        print(f"{Fore.RED}MongoDB clear data test failed.{Style.RESET_ALL}")
+        print(f"{Fore.RED}MongoDB clear data test failed: Documents not deleted.{Style.RESET_ALL}")
+        return False
+
+def test_update_data():
+    client = get_mongodb_client()
+    db = get_database(client)
+    collection = get_collection(db)
+
+    # Insert test data
+    test_data = {"title": "Test Book", "content": "Test Content"}
+    collection.insert_one(test_data)
+
+    # Update test data
+    updated_data = {"$set": {"content": "Updated Content"}}
+    collection.update_one({"title": "Test Book"}, updated_data)
+
+    # Verify update
+    updated_doc = collection.find_one({"title": "Test Book"})
+    if updated_doc and updated_doc["content"] == "Updated Content":
+        print(f"{Fore.GREEN}MongoDB update data test succeeded.{Style.RESET_ALL}")
+        # Clean up
+        collection.delete_one({"title": "Test Book"})
+        return True
+    else:
+        print(f"{Fore.RED}MongoDB update data test failed.{Style.RESET_ALL}")
+        return False
+
+def test_retrieve_data():
+    client = get_mongodb_client()
+    db = get_database(client)
+    collection = get_collection(db)
+
+    # Insert test data
+    test_data = {"title": "Test Book", "content": "Test Content"}
+    collection.insert_one(test_data)
+
+    # Retrieve test data
+    retrieved_doc = collection.find_one({"title": "Test Book"})
+    if retrieved_doc and retrieved_doc["content"] == "Test Content":
+        print(f"{Fore.GREEN}MongoDB retrieve data test succeeded.{Style.RESET_ALL}")
+        # Clean up
+        collection.delete_one({"title": "Test Book"})
+        return True
+    else:
+        print(f"{Fore.RED}MongoDB retrieve data test failed.{Style.RESET_ALL}")
         return False
 
 # Define all MongoDB test functions
@@ -94,4 +139,6 @@ mongodb_tests = {
     "MongoDB Running": test_mongodb_running,
     "MongoDB Insert Data": test_insert_data,
     "MongoDB Clear Data": test_clear_data,
+    "MongoDB Update Data": test_update_data,
+    "MongoDB Retrieve Data": test_retrieve_data,
 }
