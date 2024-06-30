@@ -1,5 +1,5 @@
 from mongodb_client import get_mongodb_client, get_database, get_collection
-from config_mongodb_client import COLLECTION_NAME
+from config.config_mongodb_client import COLLECTION_NAME
 from colorama import init, Fore, Style
 
 # Connect to MongoDB

@@ -1,5 +1,6 @@
 import sys
 import os
+import torch
 from colorama import init, Fore, Style
 
 # Append the project root directory to the system path
@@ -11,7 +12,6 @@ from elasticsearch_client import get_elasticsearch_client
 from config.config_utils import get_model_name
 from mongodb_client.mongodb_client import get_mongodb_client, get_database, get_collection
 from elasticsearch.helpers import bulk
-import torch
 
 def setup_index(index_name="sample_index"):
     es = get_elasticsearch_client()

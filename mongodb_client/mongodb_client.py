@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from .config_mongodb_client import MONGODB_URI, DATABASE_NAME, COLLECTION_NAME
+from config.config_mongodb_client import MONGODB_URI, DATABASE_NAME, COLLECTION_NAME
 
 def get_mongodb_client():
     """Get a MongoDB client."""
