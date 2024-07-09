@@ -1,3 +1,3 @@
-{"search_type": "semantic",
-"search_term": "money", 
+{"search_type": "hybrid", 
+"search_term": "marine",
 "model_name": "sentence-transformers/all-MiniLM-L6-v2"}

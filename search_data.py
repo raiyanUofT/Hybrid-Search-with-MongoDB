@@ -1,6 +1,7 @@
 import json
 from search_algorithms.keyword_search import keyword_search
 from search_algorithms.semantic_search import semantic_search
+from search_algorithms.hybrid_search import hybrid_search
 from utils.display_results import display_results
 from colorama import init, Fore, Style
 
@@ -25,5 +26,9 @@ elif search_type == 'semantic':
     print(f"{Fore.BLUE}{Style.BRIGHT}Performing semantic search for term: '{search_term}' using model '{model_name}'{Style.RESET_ALL}")
     hits = semantic_search(search_term, model_name)
     display_results(search_term, "Semantic", hits)
+elif search_type == 'hybrid':
+    print(f"{Fore.BLUE}{Style.BRIGHT}Performing hybrid search for term: '{search_term}' using model '{model_name}'{Style.RESET_ALL}")
+    hits = hybrid_search(search_term, model_name)
+    display_results(search_term, "Hybrid", hits)
 else:
     print(f"{Fore.RED}{Style.BRIGHT}Invalid search type specified in config.{Style.RESET_ALL}")
